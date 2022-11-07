@@ -22,7 +22,7 @@ public class EnemyScript : MonoBehaviour
     {
         if (currentHealth <= 0)
         {
-            anim.SetBool("SlimeDeath", true);
+            
             Destroy(this.gameObject);
 
         }
