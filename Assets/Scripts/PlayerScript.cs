@@ -17,7 +17,7 @@ public class PlayerScript : MonoBehaviour
     PlayerScript player;
     public float attackDamage = 20f;
     public bool attackReady;
-    
+    public int PlayerCoin;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +28,7 @@ public class PlayerScript : MonoBehaviour
         anim = GetComponent<Animator>();
         attack = false;
         helper = gameObject.AddComponent<HelperScript>();
+        PlayerCoin = 0;
     }
 
     // Update is called once per frame
@@ -71,6 +72,8 @@ public class PlayerScript : MonoBehaviour
             anim.SetBool("Die", true);
             await Task.Delay(1000);
             Destroy(this.gameObject);
+            SceneManager.LoadScene(3);
+
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
@@ -95,12 +98,23 @@ public class PlayerScript : MonoBehaviour
     
     }
 
-    public void OnCollisionStay2D(Collision2D collision)
+    async public void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "platform")
         {
             touchingplatform = true;
             
+        }
+        if (collision.gameObject.tag == "Chest" && PlayerCoin == 1)
+        {
+            
+            await Task.Delay(1000);
+            Destroy(this.gameObject);
+            SceneManager.LoadScene(2);
+        }
+        if (collision.gameObject.tag == "Water")
+        {
+            SceneManager.LoadScene(3);
         }
     }
     public void OnCollisionExit2D(Collision2D collision)
@@ -114,7 +128,7 @@ public class PlayerScript : MonoBehaviour
     }
 
 
-    public void OnTriggerStay2D(Collider2D col)
+     public void OnTriggerStay2D(Collider2D col)
     {
 
         if ((col.gameObject.tag == "enemy") && attackReady)
@@ -125,6 +139,11 @@ public class PlayerScript : MonoBehaviour
             player.attackReady = false;
             print("collision with " + col.gameObject.tag);
         }
+        if (col.gameObject.tag == "Coin")
+        {
+            PlayerCoin = 1;
+        }
+        
     }
     private async void OnCollisionEnter2D(Collision2D collision)
     {
